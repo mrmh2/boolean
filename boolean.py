@@ -1,3 +1,6 @@
+import itertools
+from pprint import pprint
+
 class BooleanNetwork(object):
 
     def __init__(self, size, start_state=None):
@@ -6,6 +9,7 @@ class BooleanNetwork(object):
             self.state = [0] * size
         else:
             assert(len(start_state) == size)
+            self.state = start_state
 
     def __repr__(self):
         return ''.join(str(i) for i in self.state)
@@ -21,7 +25,7 @@ def up3(current_state):
     new_state[1] = int(current_state[0] or current_state[2])
     new_state[2] = current_state[1]
 
-    return new_state
+    return tuple(new_state)
 
 
 def update_network(network):
@@ -32,11 +36,15 @@ def update_network(network):
 
     return new_state
 
+def all_states(n):
+    sl = [[0, 1]] * n
+    state_it = itertools.product(*sl)
+    return state_it
+
 def main():
-    bn = BooleanNetwork(3)
-    print bn
-    bn.update(up3)
-    print bn
+    bn = BooleanNetwork(3, [0, 0, 1])
+    state_map = {s: up3(s) for s in all_states(3)}
+    pprint(state_map)
 
 if __name__ == '__main__':
     main()
